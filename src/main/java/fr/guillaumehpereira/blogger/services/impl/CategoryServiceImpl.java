@@ -6,6 +6,7 @@ import fr.guillaumehpereira.blogger.services.CategoryService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,10 +30,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category create(String name) {
-        Category existing = categoryRepository.findByName(name);
-        if (existing != null) {
-            throw new IllegalStateException("Category with name already exists.");
-        }
         Category newCategory = new Category(name);
         return categoryRepository.save(newCategory);
     }
@@ -55,5 +52,9 @@ public class CategoryServiceImpl implements CategoryService {
             return true;
         }
         return false;
+    }
+    @Override
+    public List<Category> getAllByName(String name) {
+        return categoryRepository.findByName(name);
     }
 }

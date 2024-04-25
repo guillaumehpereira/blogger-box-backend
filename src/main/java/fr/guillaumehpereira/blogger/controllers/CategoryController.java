@@ -3,14 +3,7 @@ package fr.guillaumehpereira.blogger.controllers;
 import fr.guillaumehpereira.blogger.models.Category;
 import fr.guillaumehpereira.blogger.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,8 +20,10 @@ public class CategoryController {
 
     @GetMapping
     @Operation(summary = "Retrieve all categories", description = "Retrieves all categories available in the blog")
-    public List<Category> getAllCategories() {
-        return categoryService.getAll();
+    public List<Category> getAllCategories(@RequestParam String name) {
+        return name == null || name.isBlank()
+                ? categoryService.getAll()
+                : categoryService.getAllByName(name);
     }
 
     @GetMapping("/{id}")
