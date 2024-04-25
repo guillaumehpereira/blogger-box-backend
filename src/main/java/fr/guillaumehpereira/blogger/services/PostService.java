@@ -10,6 +10,7 @@ public interface PostService {
     List<Post> getAllPosts();
     Post getPostById(UUID id);
     Post createPost(String title, String content, Category category);
-    Post updatePost(UUID id, String title, String content);
+    Post updatePost(UUID id, String title, String content, Category category);
+
     boolean deletePost(UUID id);
 }
