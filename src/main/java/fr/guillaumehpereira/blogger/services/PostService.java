@@ -9,8 +9,8 @@ import java.util.UUID;
 public interface PostService {
     List<Post> getAllPosts();
     Post getPostById(UUID id);
-    Post createPost(String title, String content, Category category);
-    Post updatePost(UUID id, String title, String content, Category category);
-
+    Post createPost(String title, String content, UUID categoryId);
+    Post updatePost(UUID id, String title, String content, UUID categoryId);
+    List<Post> getPostByCategory(UUID categoryId);
     boolean deletePost(UUID id);
 }

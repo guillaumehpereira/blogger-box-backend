@@ -10,5 +10,6 @@ import java.util.UUID;
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
     List<Post> findByTitleContaining(String title);
-    List<Post> findByCategoryId(UUID categoryId);
+    List<Post> findByCategory_Id(UUID categoryId);
+
 }

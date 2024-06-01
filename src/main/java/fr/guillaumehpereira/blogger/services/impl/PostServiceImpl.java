@@ -3,6 +3,7 @@ package fr.guillaumehpereira.blogger.services.impl;
 import fr.guillaumehpereira.blogger.models.Category;
 import fr.guillaumehpereira.blogger.models.Post;
 import fr.guillaumehpereira.blogger.repositories.PostRepository;
+import fr.guillaumehpereira.blogger.services.CategoryService;
 import fr.guillaumehpereira.blogger.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,12 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
 
-    @Autowired
-    public PostServiceImpl(PostRepository postRepository) {
+    private final CategoryService categoryService;
+
+
+    public PostServiceImpl(PostRepository postRepository, CategoryService categoryService) {
         this.postRepository = postRepository;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -31,14 +35,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post createPost(String title, String content, Category category) {
+    public Post createPost(String title, String content, UUID categoryId) {
+        Category category = categoryService.getById(categoryId);
         Post newPost = new Post(title, content, category);
         return postRepository.save(newPost);
     }
 
     @Override
-    public Post updatePost(UUID id, String title, String content, Category category) {
+    public Post updatePost(UUID id, String title, String content, UUID categoryId) {
         Post post = getPostById(id);
+        Category category = categoryService.getById(categoryId);
         if (post != null) {
             post.setTitle(title);
             post.setContent(content);
@@ -46,6 +52,11 @@ public class PostServiceImpl implements PostService {
             return postRepository.save(post);
         }
         return null;
+    }
+
+    @Override
+    public List<Post> getPostByCategory(UUID categoryId) {
+        return postRepository.findByCategory_Id(categoryId);
     }
 
     @Override

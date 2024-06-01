@@ -30,6 +30,7 @@ public class Post {
         this.id = UUID.randomUUID();
         this.title = title;
         this.content = content;
+        this.category = category;
     }
 
     public Post() {

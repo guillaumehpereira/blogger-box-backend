@@ -18,9 +18,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class CategoryController {
     private CategoryService categoryService;
 
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
+
     @GetMapping
     @Operation(summary = "Retrieve all categories", description = "Retrieves all categories available in the blog")
-    public List<Category> getAllCategories(@RequestParam String name) {
+    public List<Category> getAllCategories(@RequestParam (required = false) String name) {
         return name == null || name.isBlank()
                 ? categoryService.getAll()
                 : categoryService.getAllByName(name);
@@ -34,14 +38,14 @@ public class CategoryController {
 
     @PostMapping
     @Operation(summary = "Create a new category", description = "Creates a new category in the blog")
-    public Category createCategory(@RequestBody Category category) {
-        return categoryService.create(category.getName());
+    public Category createCategory(@RequestBody String categoryName) {
+        return categoryService.create(categoryName);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update the name of a category", description = "Updates the name of an existing category by ID")
-    public Category updateCategory(@Parameter(description = "ID of the category to update") @PathVariable UUID id, @RequestBody Category category) {
-        return categoryService.updateName(id, category.getName());
+    public Category updateCategory(@Parameter(description = "ID of the category to update") @PathVariable UUID id, @RequestBody String categoryName) {
+        return categoryService.updateName(id, categoryName);
     }
 
     @DeleteMapping("/{id}")
