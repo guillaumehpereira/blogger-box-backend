@@ -1,5 +1,7 @@
 package fr.guillaumehpereira.blogger.services.impl;
 
+import fr.guillaumehpereira.blogger.exceptions.CategoryNotFoundByIdException;
+import fr.guillaumehpereira.blogger.exceptions.PostNotFoundByIdException;
 import fr.guillaumehpereira.blogger.models.Category;
 import fr.guillaumehpereira.blogger.models.Post;
 import fr.guillaumehpereira.blogger.repositories.PostRepository;
@@ -30,41 +32,37 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post getPostById(UUID id) {
-        return postRepository.findById(id).orElse(null);
+    public Post getPostById(UUID id) throws PostNotFoundByIdException {
+        return postRepository.findById(id).orElseThrow(() -> new PostNotFoundByIdException(id));
     }
 
     @Override
-    public Post createPost(String title, String content, UUID categoryId) {
+    public Post createPost(String title, String content, UUID categoryId) throws CategoryNotFoundByIdException {
         Category category = categoryService.getById(categoryId);
         Post newPost = new Post(title, content, category);
         return postRepository.save(newPost);
     }
 
     @Override
-    public Post updatePost(UUID id, String title, String content, UUID categoryId) {
+    public Post updatePost(UUID id, String title, String content, UUID categoryId) throws PostNotFoundByIdException, CategoryNotFoundByIdException {
         Post post = getPostById(id);
         Category category = categoryService.getById(categoryId);
-        if (post != null) {
-            post.setTitle(title);
-            post.setContent(content);
-            post.setCategory(category);
-            return postRepository.save(post);
-        }
-        return null;
+        post.setTitle(title);
+        post.setContent(content);
+        post.setCategory(category);
+        return postRepository.save(post);
     }
 
     @Override
-    public List<Post> getPostByCategory(UUID categoryId) {
+    public List<Post> getPostByCategory(UUID categoryId) throws CategoryNotFoundByIdException {
+        //Renvoie l'exception
+        categoryService.getById(categoryId);
         return postRepository.findByCategory_Id(categoryId);
     }
 
     @Override
-    public boolean deletePost(UUID id) {
-        if (postRepository.existsById(id)) {
-            postRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public void deletePost(UUID id) throws PostNotFoundByIdException {
+        getPostById(id);
+        postRepository.deleteById(id);
     }
 }
